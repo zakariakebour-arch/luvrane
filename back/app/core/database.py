@@ -12,7 +12,7 @@ engine = create_engine(
     max_overflow=20
 )
 
-#Cada peticion usa una
+#Cada peticion usa una conexion y autocommit desactivado
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
@@ -23,7 +23,7 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-#Dependencia para FastAPI
+#Dependencia para FastAPI para usar en los enpoints
 def get_db():
     db = SessionLocal()
     try:

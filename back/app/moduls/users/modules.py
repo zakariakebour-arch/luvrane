@@ -32,4 +32,4 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
 
-print("Hola mundo")
+    
