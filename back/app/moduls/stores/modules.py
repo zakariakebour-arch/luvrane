@@ -1,24 +1,34 @@
-from sqlalchemy import Column, String, ForeignKey,Text,Numeric
+from sqlalchemy import Column, String, Text
 from sqlalchemy.orm import relationship
 from core.database import Base
 import uuid
 
 
-class Product(Base):
-    __tablename__ = "products"
+class Store(Base):
+    __tablename__ = "stores"
 
+    #Identificador de la tienda
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
+    #Nombre de la tienda
     name = Column(String(255), nullable=False)
+
+    #Descripcion de la tienda
     description = Column(Text, nullable=True)
+    
+    #Tipo de tienda, no puede ser nulo
+    type = Column(String(100),nullable=False)
+    
+    #foto de perfil de la tienda
+    photo_profile = Column(String(255),nullable=True)
 
-    # precio en dinares argelinos
-    price = Column(Numeric, nullable=False)
+    #Foto rectangular extra de la tienda 
+    image = Column(String(255),nullable=True)
 
-    # relación con tienda
-    store_id = Column(String(36), ForeignKey("stores.id"), nullable=False)
+    #Relacion con la tabla productos
+    products = relationship("Product", back_populates="store")
 
-    store = relationship("Store", back_populates="products")
 
-    #relación con imágenes
-    images = relationship("ProductImage", back_populates="product", cascade="all, delete")
+
+
+

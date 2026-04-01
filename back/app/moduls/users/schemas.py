@@ -8,7 +8,7 @@ class UserRole(str, Enum):
     owner = "owner"
     customer = "customer"
 
-
+#Clase que valida la creacion de usuario
 class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=30)
     email: EmailStr
@@ -23,11 +23,11 @@ class UserCreate(BaseModel):
 
         # no espacios internos raros
         if " " in value:
-            raise ValueError("Username cannot contain spaces")
+            raise ValueError("Le nom d'utilisateur ne peut pas contenir d'espaces")
 
         # solo letras, números y _
         if not re.match(r"^[a-zA-Z0-9_]+$", value):
-            raise ValueError("Username can only contain letters, numbers and underscores")
+            raise ValueError("Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des underscores")
 
         return value
 
@@ -37,18 +37,18 @@ class UserCreate(BaseModel):
     def validate_password(cls, value):
 
         if len(value) < 8:
-            raise ValueError("Password must be at least 8 characters")
+            raise ValueError("Le mot de passe doit contenir au moins 8 caractères")
 
         if not re.search(r"[A-Z]", value):
-            raise ValueError("Password must contain at least one uppercase letter")
+            raise ValueError("Le mot de passe doit contenir au moins une lettre majuscule")
 
         if not re.search(r"[a-z]", value):
-            raise ValueError("Password must contain at least one lowercase letter")
+            raise ValueError("Le mot de passe doit contenir au moins une lettre minuscule")
 
         if not re.search(r"[0-9]", value):
-            raise ValueError("Password must contain at least one number")
+            raise ValueError("Le mot de passe doit contenir au moins un chiffre")
 
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
-            raise ValueError("Password must contain at least one special character")
+            raise ValueError("Le mot de passe doit contenir au moins un caractère spécial")
 
         return value
