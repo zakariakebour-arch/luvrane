@@ -1,12 +1,17 @@
 from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemas=["brycpt"],deprecated="auto")
+#Creamos el contexto
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
 
-#Metodo para hashear contraseñas
-def hash_password(password: str):
+# Metodo para hashear contraseñas
+def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-#Metodo para verificar contraseña
-def verify_password(plain_password: str,hashed_password: str):
-    return pwd_context.verify(plain_password,hashed_password)
+# Metodo para verificar contraseña
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
 

@@ -1,0 +1,24 @@
+#Importamos Sesion
+from sqlalchemy.orm import Session
+#Importamos el modelo de tienda
+from moduls.stores.modules import Store
+
+#Creamos metodo para que inserte los datos de la tienda
+def create_store(db: Session,store_data: dict):
+    store = Store(
+        **store_data
+    )
+    db.add(store)
+    db.commit()
+    db.refresh(store)
+    return store
+
+#Creamos el metodo que selecciona las tiendas para mostrar
+def select_stores(db: Session):
+    #Seleccionamos todo
+    return db.query(Store).all()
+
+#Metodo que selecciona segun identificador de la tienda
+def select_store_by_id(db: Session,store_id):
+    #Hacemos una consulta con ese identificador para filtrar la tienda
+    return db.query(Store).filter_by(Store.id == store_id).first()

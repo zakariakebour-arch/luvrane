@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, Enum
+from sqlalchemy import Column, String, Boolean, Enum,Integer
 from core.database import Base
 import enum
 import uuid
@@ -31,5 +31,7 @@ class User(Base):
     # estado
     is_active = Column(Boolean, default=True)
 
+    #Columna para cantidad de productos en el carrito
+    bag = Column(Integer,default=0)
 
     
