@@ -21,4 +21,9 @@ def select_stores(db: Session):
 #Metodo que selecciona segun identificador de la tienda
 def select_store_by_id(db: Session,store_id):
     #Hacemos una consulta con ese identificador para filtrar la tienda
-    return db.query(Store).filter_by(Store.id == store_id).first()
+    return db.query(Store).filter(Store.id == store_id).first()
+
+#Metodo para buscar la tienda segun nombre
+def get_store_by_name(db: Session,store_name):
+    #Hacemos una consulta segun el nombre recibido por el parametro para buscar
+    return db.query(Store).filter(Store.name == store_name).first()
