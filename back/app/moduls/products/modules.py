@@ -18,12 +18,39 @@ class Product(Base):
 
     store = relationship("Store", back_populates="products")
 
+    #
     # Relación con imágenes
     images = relationship(
         "ProductImage",
         back_populates="product",
         cascade="all, delete"
     )
+
+    # Relación con variantes (tallas, colores)
+    variants = relationship(
+        "ProductVariant",
+        back_populates="product",
+        cascade="all, delete"
+    )
+
+
+#Tabla variante de productos
+class ProductVariant(Base):
+    __tablename__ = "product_variant"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+
+    # Campos para variantes
+    size = Column(String(50), nullable=False)      
+    color = Column(String(50), nullable=False)
+    stock = Column(Integer, default=0)
+
+    sku = Column(String(100), unique=True, nullable=True)
+
+    # Relación con producto
+    product_id = Column(String(36), ForeignKey("products.id"), nullable=False)
+    product = relationship("Product", back_populates="variants")
+
 
 #Tabla de productos relacionada con la tabla de productos para contener muchas imagenes
 class ProductImage(Base):

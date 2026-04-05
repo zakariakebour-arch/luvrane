@@ -18,11 +18,10 @@ def create_store_service(db, store_data):
         raise ValueError("Le nom du magasin ne peut pas dépasser 255 caractères")
 
     #Validar que el nombre no exista
-    existing_stores = select_stores(db)
+    existing_store = get_store_by_name(db, name)
 
-    for store in existing_stores:
-        if store.name.lower() == name.lower():
-            raise ValueError("Ce nom de magasin est déjà utilisé")
+    if existing_store:
+        raise ValueError("Ce nom de magasin est déjà utilisé")
 
     # Crear la tienda
     store_dict = store_data.dict()
@@ -34,7 +33,6 @@ def create_store_service(db, store_data):
 # Obtener todas las tiendas
 def get_stores_service(db):
     return select_stores(db)
-
 
 # Obtener tienda por identificador
 def get_store_by_id_service(db, store_id: str):
@@ -50,7 +48,11 @@ def get_store_by_id_service(db, store_id: str):
 def get_store_by_name_service(db,store_name: str):
 
     #Comprobamos si exsiste la tienda con ese nombre
-    existing_stores = get_store_by_name(db,store_name)
+    name = store_name.strip()
+    existing_store = get_store_by_name(db, name)
 
-    if not existing_stores:
+    if not existing_store:
         raise ValueError("Magasin introuvable")
+
+    #Si exsiste retornamos la tienda
+    return existing_store
