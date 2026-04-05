@@ -2,6 +2,8 @@
 from sqlalchemy.orm import Session
 #Importamos el modelo de tienda
 from moduls.stores.modules import Store
+#Importamos fechas
+from datetime import datetime,timezone
 
 #Creamos metodo para que inserte los datos de la tienda
 def create_store(db: Session,store_data: dict) -> dict:
@@ -27,3 +29,15 @@ def select_store_by_id(db: Session,store_id):
 def get_store_by_name(db: Session,store_name):
     #Hacemos una consulta segun el nombre recibido por el parametro para buscar
     return db.query(Store).filter(Store.name == store_name).first()
+
+#Metodo para eliminar/desactivar la cuenta de tienda
+def delete_store(db: Session,store: Store) -> Store:
+    #Si todo correcto activamos opcion
+    store.is_active = False
+    #Insertamos fecha del evento
+    store.deleted_at = datetime.now(timezone.utc)
+    
+    db.commit()
+    db.refresh(store)
+
+    return store

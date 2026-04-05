@@ -13,4 +13,3 @@ def create_product(db: Session,product_data: dict) -> dict:
     db.commit()
     return product
 
-

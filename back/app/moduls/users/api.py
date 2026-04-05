@@ -8,8 +8,8 @@ from moduls.users.services import register_user_service, login_user_service
 router = APIRouter(tags=["Users"])
 
 
-#Para regostrarse el usuario
-@router.post("/users", response_model=UserResponse)
+#Para registrar el usuario
+@router.post("/register", response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return register_user_service(db, user)
@@ -18,7 +18,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 
 #Para realizar Login
-@router.post("/auth/login")
+@router.post("/login")
 def login(data: UserLogin, db: Session = Depends(get_db)):
     try:
         user = login_user_service(db, data.email, data.password)

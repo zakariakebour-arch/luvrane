@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, String, Text,Boolean,DateTime
 from sqlalchemy.orm import relationship
 from core.database import Base
 import uuid
-
+from datetime import datetime,timezone
 
 class Store(Base):
     __tablename__ = "stores"
@@ -28,7 +28,17 @@ class Store(Base):
     #Relacion con la tabla productos
     products = relationship("Product", back_populates="store")
 
+    #Fecha de creacion de la tienda
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
+    #Columna para guardar fecha de ultima de modificacion de la tienda
+    updated_at = Column(DateTime,nullable=True, default=lambda: datetime.now(timezone.utc),onupdate=lambda: datetime.now(timezone.utc))
+
+    #Columna para guardar la fecha en la que fue desactiva la cuenta de la tienda
+    deleted_at = Column(DateTime,nullable=True)
+
+    #Columna para eliminar la tienda pero no de la base de datos completamente y poder recuperarla
+    is_active = Column(Boolean,default=True)
 
 
 

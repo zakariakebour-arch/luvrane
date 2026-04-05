@@ -4,6 +4,7 @@ from moduls.stores.repositories import (
     select_stores,
     get_store_by_name
 )
+from datetime import datetime,timezone
 
 # Metodo para crear tienda
 def create_store_service(db, store_data):
@@ -12,10 +13,10 @@ def create_store_service(db, store_data):
     name = store_data.name.strip()
 
     if len(name) < 2:
-        raise ValueError("Le nom du magasin doit contenir au moins 2 caractères")
+        raise ValueError("Le nom du boutique doit contenir au moins 2 caractères")
 
     if len(name) > 255:
-        raise ValueError("Le nom du magasin ne peut pas dépasser 255 caractères")
+        raise ValueError("Le nom du boutique ne peut pas dépasser 255 caractères")
 
     #Validar que el nombre no exista
     existing_store = get_store_by_name(db, name)
@@ -40,7 +41,7 @@ def get_store_by_id_service(db, store_id: str):
 
     #Si no se encuentra la tienda seleccionada
     if not store:
-        raise ValueError("Magasin introuvable")
+        raise ValueError("Boutique introuvable")
 
     return store
 
@@ -52,7 +53,26 @@ def get_store_by_name_service(db,store_name: str):
     existing_store = get_store_by_name(db, name)
 
     if not existing_store:
-        raise ValueError("Magasin introuvable")
+        raise ValueError("Boutique introuvable")
 
     #Si exsiste retornamos la tienda
     return existing_store
+
+#Metodo para eliminar tienda del sistema
+def delete_store_service(db,store_id: str):
+    #Seleccionamos la tienda
+    store = select_store_by_id(db,store_id)
+
+    #Si no exsiste
+    if not store:
+        raise ValueError("Boutique introuvable")
+    
+    #Si ya esta desactivada lanzamos error
+    if not store.is_active:
+        raise ValueError("La boutique est déjà désactivée")
+    
+    #Si todo correcto activamos opcion
+    store.is_active = False
+    #Insertamos fecha del evento
+    store.deleted_at = datetime.now(timezone.utc)
+    

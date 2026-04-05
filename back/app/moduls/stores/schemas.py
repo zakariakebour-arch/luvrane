@@ -34,7 +34,7 @@ class StoreResponse(BaseModel):
     description: Optional[str]
     photo_profile: Optional[str]
     image: Optional[str]
-    products: List = []  # On peut ajouter plus tard ProductResponse
+    products: List = []  
 
     class Config:
         from_attributes = True
