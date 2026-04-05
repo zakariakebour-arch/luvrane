@@ -60,6 +60,9 @@ class ProductImage(Base):
 
     image_url = Column(String(255), nullable=False)
 
+    #Tipo de objeto (puede ser video o imagen),por defecto imagen
+    media_type = Column(String(255),default="image") 
+    
     # orden del carrusel
     position = Column(Integer, default=0)
 

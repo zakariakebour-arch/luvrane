@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from moduls.stores.modules import Store
 
 #Creamos metodo para que inserte los datos de la tienda
-def create_store(db: Session,store_data: dict):
+def create_store(db: Session,store_data: dict) -> dict:
     store = Store(
         **store_data
     )
@@ -14,7 +14,7 @@ def create_store(db: Session,store_data: dict):
     return store
 
 #Creamos el metodo que selecciona las tiendas para mostrar
-def select_stores(db: Session):
+def select_stores(db: Session) -> list:
     #Seleccionamos todo
     return db.query(Store).all()
 
