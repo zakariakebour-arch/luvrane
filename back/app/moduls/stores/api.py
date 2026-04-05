@@ -52,3 +52,6 @@ def get_store_by_name(store_name: str,db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(status_code=404,detail=str(e))
     
+#Endpoint para eliminar/desactivar tienda
+@router.post("/delete",response_model=StoreResponse,status_code=200)
+def delete_store(dn: Session= Depends(get_db)):

@@ -16,9 +16,13 @@ def create_store(db: Session,store_data: dict) -> dict:
     return store
 
 #Creamos el metodo que selecciona las tiendas para mostrar
-def select_stores(db: Session) -> list:
-    #Seleccionamos todo
-    return db.query(Store).all()
+def select_stores(db: Session,skip: int,limit: int=20) -> dict:
+    #Contamos el total de las tiendas
+    total = db.query(Store).count()  
+    #Las paginamos                      
+    stores = db.query(Store).offset(skip).limit(limit).all()
+    #Devolvemos resultado total y las tiendas
+    return {"total": total, "stores": stores}
 
 #Metodo que selecciona segun identificador de la tienda
 def select_store_by_id(db: Session,store_id):
@@ -37,6 +41,20 @@ def delete_store(db: Session,store: Store) -> Store:
     #Insertamos fecha del evento
     store.deleted_at = datetime.now(timezone.utc)
     
+    db.commit()
+    db.refresh(store)
+
+    return store
+
+# Metodo para actualizar la tienda e insertar la fecha de ultima actualizacion
+def update_store(db: Session, store: Store, store_data: dict) -> Store:  #Recibe datos de store exsistenes
+   #Actualizamos solo el dato que se cambio, los otros campos como son None los ignoramos 
+    for field,value in store_data.items():
+       if value is not None:
+           setattr(store,field,value)
+    
+    #Insertamos fecha actual de la modificacion
+    store.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(store)
 

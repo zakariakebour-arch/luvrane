@@ -34,4 +34,5 @@ class User(Base):
     #Columna para cantidad de productos en el carrito
     bag = Column(Integer,default=0)
 
-    
+    #Columna que guarda el numero de me gusta a productos
+    likes = Column(Integer,default=0)

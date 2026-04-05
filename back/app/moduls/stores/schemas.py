@@ -27,7 +27,7 @@ class CreateStore(BaseModel):
             raise ValueError("La description ne peut pas dépasser 1000 caractères")
         return value
 
-
+#Clase para respuesta de tiendas en los enpoints
 class StoreResponse(BaseModel):
     id: str
     name: str
@@ -38,3 +38,8 @@ class StoreResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+#Clase para respuesta de paginacion
+class StoresPageResponse(BaseModel):
+    total: int
+    stores: List[StoreResponse]

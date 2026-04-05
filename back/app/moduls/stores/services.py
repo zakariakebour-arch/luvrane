@@ -2,9 +2,10 @@ from moduls.stores.repositories import (
     create_store,
     select_store_by_id,
     select_stores,
-    get_store_by_name
+    get_store_by_name,
+    delete_store,
+    update_store
 )
-from datetime import datetime,timezone
 
 # Metodo para crear tienda
 def create_store_service(db, store_data):
@@ -31,9 +32,9 @@ def create_store_service(db, store_data):
     return create_store(db, store_dict)
 
 
-# Obtener todas las tiendas
-def get_stores_service(db):
-    return select_stores(db)
+# Obtener todas las tiendas, pasamos los parametros necesarios para la paginacion
+def get_stores_service(db,skip: int=0,limit: int=20):
+    return select_stores(db, skip=skip, limit=limit)
 
 # Obtener tienda por identificador
 def get_store_by_id_service(db, store_id: str):
@@ -71,8 +72,19 @@ def delete_store_service(db,store_id: str):
     if not store.is_active:
         raise ValueError("La boutique est déjà désactivée")
     
-    #Si todo correcto activamos opcion
-    store.is_active = False
-    #Insertamos fecha del evento
-    store.deleted_at = datetime.now(timezone.utc)
+    return delete_store(db,store)
     
+# Metodo para actualizar tienda
+def update_store_service(db, store_id: str, store_data):
+    # Comprobamos si la tienda seleccionada existe
+    store = select_store_by_id(db, store_id)
+
+    # Si no existe
+    if not store:
+        raise ValueError("Boutique introuvable")   
+    
+    # Convertimos el schema a diccionario ignorando los campos None
+    store_dict = store_data.model_dump(exclude_none=True)  
+
+    # Si existe y todo correcto devolvemos la actualizacion
+    return update_store(db, store, store_dict)             
