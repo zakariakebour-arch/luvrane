@@ -1,7 +1,9 @@
-from sqlalchemy import Column, String, ForeignKey, Text, Numeric, Integer
+from sqlalchemy import Column, String, ForeignKey, Text, Numeric, Integer,DateTime,Boolean
 from sqlalchemy.orm import relationship
 from core.database import Base
 import uuid
+#Importamos fecha
+from datetime import datetime,timezone
 
 #Tabla completa de productos,relacion uno a muchos entre imagenes y Productimage para carrusel
 class Product(Base):
@@ -18,7 +20,16 @@ class Product(Base):
 
     store = relationship("Store", back_populates="products")
 
-    #
+    #Columna para activar/desactivar el producto
+    is_active = Column(Boolean,default=True)
+
+    #Columna para fecha de eliminacion
+    deleted_at = Column(DateTime,nullable=True)
+
+    
+    #Columna para registrar ultima fecha de modificacion
+    updated_at = Column(DateTime, nullable=True, onupdate=lambda: datetime.now(timezone.utc))  
+
     # Relación con imágenes
     images = relationship(
         "ProductImage",
@@ -36,15 +47,18 @@ class Product(Base):
 
 #Tabla variante de productos
 class ProductVariant(Base):
-    __tablename__ = "product_variant"
+    __tablename__ = "product_variants"
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
     # Campos para variantes
-    size = Column(String(50), nullable=False)      
-    color = Column(String(50), nullable=False)
+    size = Column(String(50), nullable=True)      
+    color = Column(String(50), nullable=True)
     stock = Column(Integer, default=0)
 
+    #Precio por variante
+    price = Column(Numeric(10,2),nullable=True)
+    
     sku = Column(String(100), unique=True, nullable=True)
 
     # Relación con producto

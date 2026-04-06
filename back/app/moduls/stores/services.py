@@ -10,7 +10,7 @@ from moduls.stores.repositories import (
 # Metodo para crear tienda
 def create_store_service(db, store_data):
 
-    # 1️Validación de nombre (aunque Pydantic ya lo hace, reforzamos)
+    # Validación de nombre aunque Pydantic ya lo hace, reforzamos
     name = store_data.name.strip()
 
     if len(name) < 2:
