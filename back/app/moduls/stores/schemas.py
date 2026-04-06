@@ -7,6 +7,7 @@ class CreateStore(BaseModel):
     description: Optional[str] = Field(None, max_length=1000)
     photo_profile: Optional[str] = None
     image: Optional[str] = None
+    type: str = Field(...,min_length=2,max_length=100)
 
     # Validation validacion para el nombre
     @field_validator("name")
@@ -35,6 +36,10 @@ class StoreResponse(BaseModel):
     photo_profile: Optional[str]
     image: Optional[str]
     products: List = []  
+    type: str
+    is_active: bool
+    created_at: Optional[str] = None
+    products: List[dict] = []
 
     class Config:
         from_attributes = True
@@ -43,3 +48,18 @@ class StoreResponse(BaseModel):
 class StoresPageResponse(BaseModel):
     total: int
     stores: List[StoreResponse]
+
+#Clase schema para actualizacion de la tienda
+class UpdateStore(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=255)  
+    description: Optional[str] = Field(None, max_length=1000)         
+    photo_profile: Optional[str] = None
+    image: Optional[str] = None
+    type: Optional[str] = Field(None, min_length=2, max_length=100)  
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value):
+        if value is not None:
+            return value.strip()
+        return value

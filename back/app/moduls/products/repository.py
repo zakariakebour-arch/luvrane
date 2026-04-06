@@ -13,3 +13,6 @@ def create_product(db: Session,product_data: dict) -> dict:
     db.commit()
     return product
 
+#Metodo para listar todos los productos
+def get_products(db: Session,skip: int,limit: int=20) -> dict:
+    pass
