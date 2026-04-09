@@ -36,3 +36,9 @@ class User(Base):
 
     #Columna que guarda el numero de me gusta a productos
     likes = Column(Integer,default=0)
+
+    #Columna para direccion, no obligatoria
+    direcction = Column(String(255),nullable=True)
+
+    #Columna wilaya obligatoria
+    wilaya = Column(String(255),nullable=False)

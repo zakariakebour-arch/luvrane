@@ -10,7 +10,7 @@ def create_store(db: Session,store_data: dict) -> dict:
     store = Store(
         **store_data
     )
-    db.add(store)
+    db.add(store) 
     db.commit()
     db.refresh(store)
     return store
