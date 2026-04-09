@@ -1,55 +1,121 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, EmailStr, field_validator
+from typing import Optional, List
+from datetime import datetime
 from enum import Enum
-import re
-
 
 class UserRole(str, Enum):
     admin = "admin"
     owner = "owner"
     customer = "customer"
 
-#Clase que valida la creacion de usuario
+#Direccion
+
+# Schema de entrada para crear direccion
+class AddressCreate(BaseModel):
+    street: str = Field(..., min_length=2, max_length=255)
+    city: str = Field(..., min_length=2, max_length=100)
+    wilaya: str = Field(..., min_length=2, max_length=100)
+    postal_code: Optional[str] = Field(None, max_length=20)
+    is_default: bool = False
+
+# Schema de respuesta de direccion
+class AddressResponse(BaseModel):
+    id: str
+    street: str
+    city: str
+    wilaya: str
+    postal_code: Optional[str] = None
+    is_default: bool
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+# Carrito
+
+# Schema de entrada para añadir producto al carrito
+class CartItemCreate(BaseModel):
+    product_id: str
+    variant_id: Optional[str] = None
+    quantity: int = Field(1, gt=0)
+
+# Schema de respuesta de item del carrito
+class CartItemResponse(BaseModel):
+    id: str
+    product_id: str
+    variant_id: Optional[str] = None
+    quantity: int
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+# Schema de respuesta de like
+class ProductLikeResponse(BaseModel):
+    id: str
+    product_id: str
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+#Usuario
+
+# Schema de entrada para crear usuario
 class UserCreate(BaseModel):
-    username: str = Field(..., min_length=3, max_length=30)
+    username: str = Field(..., min_length=2, max_length=50)
     email: EmailStr
-    password: str = Field(..., min_length=8, max_length=128)
-    role: UserRole
-    bag: int
-    
-    # Validacion de username
+    password: str = Field(..., min_length=8, max_length=255)
+    wilaya: str = Field(..., min_length=2, max_length=100)
+
     @field_validator("username")
     @classmethod
     def validate_username(cls, value):
-        value = value.strip()
+        return value.strip()
 
-        # no espacios internos raros
-        if " " in value:
-            raise ValueError("Le nom d'utilisateur ne peut pas contenir d'espaces")
-
-        # solo letras, números y _
-        if not re.match(r"^[a-zA-Z0-9_]+$", value):
-            raise ValueError("Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des underscores")
-
-        return value
-
-    # Validacion de la contraseña que tengo formato correcto
     @field_validator("password")
     @classmethod
     def validate_password(cls, value):
-
         if len(value) < 8:
             raise ValueError("Le mot de passe doit contenir au moins 8 caractères")
+        return value
 
-        if not re.search(r"[A-Z]", value):
-            raise ValueError("Le mot de passe doit contenir au moins une lettre majuscule")
+# Schema de respuesta de usuario
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: str
+    role: UserRole
+    is_active: bool
+    created_at: Optional[datetime] = None
+    addresses: List[AddressResponse] = []
+    cart_items: List[CartItemResponse] = []
+    likes: List[ProductLikeResponse] = []
 
-        if not re.search(r"[a-z]", value):
-            raise ValueError("Le mot de passe doit contenir au moins une lettre minuscule")
+    class Config:
+        from_attributes = True
 
-        if not re.search(r"[0-9]", value):
-            raise ValueError("Le mot de passe doit contenir au moins un chiffre")
+# Schema para actualizar usuario
+class UserUpdate(BaseModel):
+    username: Optional[str] = Field(None, min_length=2, max_length=50)
+    email: Optional[EmailStr] = None
+    wilaya: Optional[str] = Field(None, min_length=2, max_length=100)
 
-        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
-            raise ValueError("Le mot de passe doit contenir au moins un caractère spécial")
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, value):
+        if value is not None:
+            return value.strip()
+        return value
 
+# Schema para cambiar contraseña
+class UserChangePassword(BaseModel):
+    old_password: str
+    new_password: str = Field(..., min_length=8, max_length=255)
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_password(cls, value):
+        if len(value) < 8:
+            raise ValueError("Le mot de passe doit contenir au moins 8 caractères")
         return value
