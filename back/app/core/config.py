@@ -8,6 +8,11 @@ load_dotenv()
 #Variables de configuracion
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM","HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 7))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 40))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 10))
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+#Variables relacionadas con OAuth de Google
+google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+google_redirect_uri = os.getenv("GOOGLE_CLIENT_URI")

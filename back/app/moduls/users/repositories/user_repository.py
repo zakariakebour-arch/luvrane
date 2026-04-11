@@ -41,3 +41,8 @@ def delete_user(db: Session,user: User) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+#Metodo para seleccionar usuario segun nombre
+def get_user_by_name(db: Session,user_name: str) -> User:
+    #Devolvemos la consulta con el nombre de usuario buscado
+    return db.query(User).filter(User.username == user_name).first()
