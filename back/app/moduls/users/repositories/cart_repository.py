@@ -18,6 +18,16 @@ def add_cart_item(db: Session, user_id: str, product_id: str, variant_id: str = 
 def get_cart(db: Session, user_id: str) -> list:
     return db.query(CartItem).filter(CartItem.user_id == user_id).all()
 
+#Metodo para seleccionar producto dentro de el carrito
+def get_item(db: Session,user_id:str,variant_id: str = None,product_id: str = None):
+    #Buscamos segun identificador del producto
+    query = db.query(CartItem).filter(CartItem.user_id == user_id,CartItem.product_id == product_id)
+
+    if variant_id:
+        query = query.filter(CartItem.variant_id == variant_id)
+
+    return query.first()
+
 # Actualizar cantidad de un item
 def update_cart_quantity(db: Session, item_id: str, quantity: int) -> CartItem:
     item = db.query(CartItem).filter(CartItem.id == item_id).first()

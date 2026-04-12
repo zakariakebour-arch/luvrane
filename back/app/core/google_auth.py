@@ -3,6 +3,9 @@ from core.exceptions import UnauthorizedException
 #Importamos variables desde config
 from core.config import google_client_id,google_client_secret,google_redirect_uri
 
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 GOOGLE_CLIENT_ID = google_client_id
 GOOGLE_CLIENT_SECRET = google_client_secret
 GOOGLE_REDIRECT_URI = google_redirect_uri
@@ -27,19 +30,28 @@ async def exchange_google_code(code: str) -> dict:
         return response.json()
 
 #Metodo para verificar el token de google y obtener datos del usuario
-async def verify_google_token(id_token: str) -> dict:
-    async with httpx.AsyncClient() as client:
+async def verify_google_token(id_token_str: str) -> dict:
+    try:
         #Verificamos el token con Google
-        response = await client.get(
-            f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}"
+        idinfo = id_token.verify_oauth2_token(
+            id_token_str,
+            requests.Request(),
+            GOOGLE_CLIENT_ID
         )
-        if response.status_code != 200:
-            raise UnauthorizedException("Token Google invalide")
-
-        data = response.json()
 
         #Comprobamos que el token es para nuestra app
-        if data.get("aud") != GOOGLE_CLIENT_ID:
+        if idinfo.get("aud") != GOOGLE_CLIENT_ID:
             raise UnauthorizedException("Token Google invalide")
 
-        return data
+        # Validar issuer
+        if idinfo.get("iss") not in ["accounts.google.com", "https://accounts.google.com"]:
+            raise UnauthorizedException("Token Google invalide")
+
+        # Validar expiración (aunque la librería ya lo hace, lo dejamos explícito)
+        if "exp" not in idinfo:
+            raise UnauthorizedException("Token Google invalide")
+
+        return idinfo
+
+    except Exception:
+        raise UnauthorizedException("Token Google invalide")
