@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text,Boolean,DateTime
+from sqlalchemy import Column, String, Text,Boolean,DateTime,ForeignKey
 from sqlalchemy.orm import relationship
 from core.database import Base
 import uuid
@@ -9,6 +9,11 @@ class Store(Base):
 
     #Identificador de la tienda
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+
+    #Relacion con el usuario propietario de la tienda
+    owner_id = Column(String(36),ForeignKey("user_id"),nullable=False)
+
+    owner = relationship("User")
 
     #Nombre de la tienda
     name = Column(String(255), nullable=False)
@@ -32,7 +37,7 @@ class Store(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     #Columna para guardar fecha de ultima de modificacion de la tienda
-    updated_at = Column(DateTime,nullable=True, default=lambda: datetime.now(timezone.utc),onupdate=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime,nullable=True,onupdate=lambda: datetime.now(timezone.utc))
 
     #Columna para guardar la fecha en la que fue desactiva la cuenta de la tienda
     deleted_at = Column(DateTime,nullable=True)

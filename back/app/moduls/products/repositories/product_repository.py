@@ -1,5 +1,5 @@
 #Importamos el modelo de productos con todas las tablas
-from moduls.products.modules import (Product,ProductImage,ProductVariant)
+from moduls.products.modules import Product
 #Importamos ORM con la sesion
 from sqlalchemy.orm import Session
 #Importamos fecha
@@ -17,11 +17,11 @@ def create_product(db: Session,product_data: dict) -> dict:
 
 #Metodo para listar todos los productos
 def get_products(db: Session,skip: int=0,limit: int=20) -> dict:
-    #Total de productos para paginacion
-    total = db.query(Product).count()
+    #Total de productos para paginacion, filtramos por activos
+    total = db.query(Product).filter(Product.is_active == True).count()
 
-    #productos a mostrar con paginacion
-    products = db.query(Product).offset(skip).limit(limit).all()
+    #productos a mostrar con paginacion, filtramos por activo
+    products = db.query(Product).filter(Product.is_active == True).offset(skip).limit(limit).all()
 
     #Devolvemos resultado total y los productos
     return {"total":total,"products":products}
@@ -35,7 +35,12 @@ def get_product_by_id(db: Session,product_id: str):
 def get_product_by_name(db: Session,product_name: str):
     #Hacemos la consulta segun el nombre
     return db.query(Product).filter(Product.name == product_name).first()
- 
+
+#Metodo para selccionar producto segun nombre y su tienda
+def get_product_by_name_and_store(db: Session,product_name: str,store_id: str):
+    #Devolvemos consulta 
+    return db.query(Product).filter(Product.name == product_name, Product.store_id == store_id).first()
+
 #Metodo para eliminar producto
 def delete_product(db: Session,product: Product )-> Product:
     #Lo desactivamos
