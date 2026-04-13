@@ -1,9 +1,18 @@
-from sqlalchemy import Column, String, ForeignKey, Text, Numeric, Integer,DateTime,Boolean
+from sqlalchemy import Column, String, ForeignKey, Text, Numeric, Integer,DateTime,Boolean,Enum
 from sqlalchemy.orm import relationship
 from core.database import Base
 import uuid
 #Importamos fecha
 from datetime import datetime,timezone
+#Importamos enum
+import enum
+
+#Clase para controlar estado del pedido (delivred,pending,confiremed,cancelled,returned)
+class ProductStatus(enum.Enum):
+    active = "active"                  
+    pending = "pending"              
+    out_of_stock = "out_of_stock"      
+    discontinued = "discontinued"    
 
 #Tabla completa de productos,relacion uno a muchos entre imagenes y Productimage para carrusel
 class Product(Base):
@@ -26,6 +35,8 @@ class Product(Base):
     #Columna para fecha de eliminacion
     deleted_at = Column(DateTime,nullable=True)
 
+    #Columna relacion con la clase de estado del producto
+    status = Column(Enum(ProductStatus),nullable=False,default=ProductStatus.active)
     
     #Columna para registrar ultima fecha de modificacion
     updated_at = Column(DateTime, nullable=True, onupdate=lambda: datetime.now(timezone.utc))  
@@ -43,7 +54,6 @@ class Product(Base):
         back_populates="product",
         cascade="all, delete"
     )
-
 
 #Tabla variante de productos
 class ProductVariant(Base):

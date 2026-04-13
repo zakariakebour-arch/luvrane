@@ -4,6 +4,8 @@ from moduls.products.modules import Product
 from sqlalchemy.orm import Session
 #Importamos fecha
 from datetime import datetime,timezone
+#Importamos estado del producto
+from moduls.products.modules import ProductStatus
 
 #Creamos el metodo que se encarga de insertar los datos del producto creado
 def create_product(db: Session,product_data: dict) -> dict:
@@ -64,3 +66,15 @@ def update_product(db: Session,product: Product,product_data: dict) -> Product:
     #Devolvemos el producto
     return product
 
+#Metodo para consultar estado del producto
+def get_product_status(db: Session,product_id: str):
+    #Devolvemos el estado del producto
+    return db.query(ProductStatus).filter(Product.id == product_id).first()
+
+# Metodo para actualizar estado del producto
+def update_product_status(db: Session, product: Product, status: ProductStatus) -> Product:
+    product.status = status
+    product.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(product)
+    return product
