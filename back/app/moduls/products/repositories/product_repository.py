@@ -68,8 +68,13 @@ def update_product(db: Session,product: Product,product_data: dict) -> Product:
 
 #Metodo para consultar estado del producto
 def get_product_status(db: Session,product_id: str):
-    #Devolvemos el estado del producto
-    return db.query(ProductStatus).filter(Product.id == product_id).first()
+    #Realizamos la consulta a la base de datos filtrando el producto
+    product =  db.query(Product).filter(Product.id == product_id).first()
+
+    #Si tiene estado el producto
+    if product:
+        return  product.status
+    return None
 
 # Metodo para actualizar estado del producto
 def update_product_status(db: Session, product: Product, status: ProductStatus) -> Product:
@@ -78,3 +83,4 @@ def update_product_status(db: Session, product: Product, status: ProductStatus) 
     db.commit()
     db.refresh(product)
     return product
+

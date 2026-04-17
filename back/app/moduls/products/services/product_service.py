@@ -1,5 +1,5 @@
 #Importamos repositorio de producto
-from moduls.products.repositories.product_repository import get_product_by_id,get_products,get_product_by_name,create_product,update_product,delete_product,get_product_by_name_and_store,update_product_status
+from moduls.products.repositories.product_repository import get_product_by_id,get_products,get_product_by_name,create_product,update_product,delete_product,get_product_by_name_and_store,update_product_status,get_product_status
 #Importamos el metodo de selccion de la tienda
 from moduls.stores.repositories import select_store_by_id
 #Importamos excepciones
@@ -118,3 +118,14 @@ def update_product_status_service(db, product_id: str, status: ProductStatus, cu
         raise ForbiddenException("Accès interdit")
 
     return update_product_status(db, product, status)
+
+#Metodo para consultar el estado del producto
+def get_product_status(db,product_id: str):
+    #Comprobamos si el producto exsiste
+    product = get_product_by_id(db,product_id)
+    if not product:
+        raise NotFoundException("Produit introuvable")
+    
+    #Devolvemos el estado del producto
+    return {"status":product.status}
+
