@@ -61,21 +61,39 @@ class ProductVariant(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
-    # Campos para variantes
-    size = Column(String(50), nullable=True)      
-    color = Column(String(50), nullable=True)
+    #Stock de la variante
     stock = Column(Integer, default=0)
 
     #Precio por variante
     price = Column(Numeric(10,2),nullable=True)
     
-    sku = Column(String(100), unique=True, nullable=True)
+    sku = Column(String(100), unique=True, nullable=False, index=True)
 
     # Relación con producto
     product_id = Column(String(36), ForeignKey("products.id"), nullable=False)
     product = relationship("Product", back_populates="variants")
 
+#Clase Opciones de prodcuto (Para variante)
+class ProductOption(Base):
+    __tablename__ = "product_options"
 
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+
+    product_id = Column(String(36), ForeignKey("products.id"), nullable=False)
+
+    #Nombre de la opcion extra del producto (Color,tamaño..)
+    name = Column(String(50), nullable=False)  
+
+#Clase Valor de opcion del producto
+class ProductOptionValue(Base):
+    __tablename__ = "product_option_values"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+
+    option_id = Column(String(36), ForeignKey("product_options.id"), nullable=False)
+
+    value = Column(String(50), nullable=False)
+    
 #Tabla de productos relacionada con la tabla de productos para contener muchas imagenes
 class ProductImage(Base):
     __tablename__ = "product_images"
