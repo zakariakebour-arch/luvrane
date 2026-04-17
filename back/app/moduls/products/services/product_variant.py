@@ -1,2 +1,4 @@
 #Importamos repositorio de variante
-from moduls.products.repositories import product_variant
+from moduls.products.repositories.product_variant import get_product_variant_by_id,update_variant_stock,delete_product_variant,add_product_variant
+#Importamos excepciones
+from core.exceptions import NotFoundException,ConflictException,ValidationException,ForbiddenException
