@@ -31,7 +31,7 @@ def add_product_variant_service(db, variant_data, option_value_ids, attributes, 
 
     # Creamos variante, manejamos error si el stock exsiste y hacemos rollback a nivel base de datos
     try:
-        variant = add_product_variant(db,variant_data,option_value_ids)
+        variant = add_product_variant(db, product_id, variant_data, option_value_ids)
     except IntegrityError:
         db.rollback()
         raise ConflictException("Variant already exists")
@@ -62,4 +62,4 @@ def update_variant_stock_service(db, variant_id, stock):
         raise ValidationException("Stock invalide")
 
     # Actualizamos stock
-    return update_variant_stock(db,stock)
+    return update_variant_stock(db,variant_id,stock)

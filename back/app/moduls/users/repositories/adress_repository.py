@@ -18,6 +18,11 @@ def get_directions(db: Session,user_id: str) -> list:
     #Realizamos la consulta
     return db.query(UserAddress).filter(UserAddress.user_id == user_id).all()
 
+#Metodo para seleccionar la direccion con el id
+def get_direction_by_id(db: Session,direction_id: str):
+    #Devolvemos la consulta
+    return db.query(UserAddress).filter(UserAddress.id == direction_id).first()
+
 #Creamos metodo para modificar direccion
 def update_direction(db: Session,user_adress: UserAddress,direction_data: dict) -> UserAddress:
     for field,value in direction_data.items():

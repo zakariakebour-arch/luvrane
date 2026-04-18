@@ -25,12 +25,6 @@ def add_product_variant(db: Session,product_id: str,variant_data: dict,option_va
     db.refresh(variant)
     return variant
 
-#Metodo para crear variante segun sus atriburtos
-def get_variant_by_signature(db: Session, signature: str):
-    return db.query(ProductVariant).filter(
-        ProductVariant.signature == signature
-    ).first()
-
 # Actualizar stock de variante
 def update_variant_stock(db: Session, variant_id: str, stock: int) -> ProductVariant:
     variant = db.query(ProductVariant).filter(ProductVariant.id == variant_id).first()

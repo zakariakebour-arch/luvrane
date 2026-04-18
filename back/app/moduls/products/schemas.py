@@ -99,8 +99,8 @@ class ProductCreate(ProductBase):
 
 class ProductUpdate(BaseModel):
     name: Optional[str]
-    description: Optional[str]
-    price: Optional[Decimal]
+    description: Optional[str] = None
+    price: Optional[Decimal] = None
 
     @field_validator("name")
     @classmethod
@@ -125,6 +125,8 @@ class ProductResponse(ProductBase):
     store_id: str
     images: List[ProductImageResponse] = []
     variants: List[ProductVariantResponse] = []
-
+    is_active: bool                
+    status: str                       
+    created_at: Optional[str] = None   
     class Config:
         from_attributes = True
