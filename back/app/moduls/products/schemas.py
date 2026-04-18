@@ -130,3 +130,7 @@ class ProductResponse(ProductBase):
     created_at: Optional[str] = None   
     class Config:
         from_attributes = True
+
+#Schema para actualizar posicion
+class UpdatePosition(BaseModel):
+    position: int

@@ -120,7 +120,7 @@ def update_product_status_service(db, product_id: str, status: ProductStatus, cu
     return update_product_status(db, product, status)
 
 #Metodo para consultar el estado del producto
-def get_product_status(db,product_id: str):
+def get_product_status_service(db,product_id: str):
     #Comprobamos si el producto exsiste
     product = get_product_by_id(db,product_id)
     if not product:
