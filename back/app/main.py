@@ -12,6 +12,8 @@ from moduls.stores.api.api import router as store_router
 from moduls.products.api.product_route import router as product_router
 from moduls.products.api.product_image import router as product_image_router
 from moduls.products.api.product_variant import router as product_variant_router
+#Importamos los endpoints de gestion de pedidos
+from moduls.orders.api.order_api import router as order_router
 
 #Creamos la aplicacion
 app = FastAPI(
@@ -42,9 +44,10 @@ app.include_router(address_router, prefix="/api/v1/users/addresses")
 app.include_router(likes_router, prefix="/api/v1/users/likes")
 app.include_router(cart_router, prefix="/api/v1/users/cart")
 app.include_router(store_router, prefix="/api/v1/stores")
-app.include_router(product_image_router,prefix="/api/v1/product")
-app.include_router(product_router,prefix="/api/v1/product")
-app.include_router(product_variant_router,prefix="/api/v1/product")
+app.include_router(product_router, prefix="/api/v1/products")        
+app.include_router(product_image_router, prefix="/api/v1/products/images")  
+app.include_router(product_variant_router, prefix="/api/v1/products/variants")
+app.include_router(order_router,prefix="/api/v1/orders")
 
 #Endpoint de salud para verificar que la API esta funcionando
 @app.get("/health")
