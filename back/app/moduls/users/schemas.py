@@ -119,3 +119,16 @@ class UserChangePassword(BaseModel):
         if len(value) < 8:
             raise ValueError("Le mot de passe doit contenir au moins 8 caractères")
         return value
+    
+#Schema de login inline
+class LoginData(BaseModel):
+    email: EmailStr
+    password: str
+
+#Schema de refresh token inline
+class RefreshTokenData(BaseModel):
+    refresh_token: str
+
+#Schema de Google code inline
+class GoogleCodeData(BaseModel):
+    code: str
