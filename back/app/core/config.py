@@ -1,18 +1,42 @@
-#Importamos libreria que se encarga de cargar las variables 
-from dotenv import load_dotenv
+import boto3
+import json
 import os
+from dotenv import load_dotenv
 
-#Cargamos el archivo .env
 load_dotenv()
 
-#Variables de configuracion
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM","HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 40))
-REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 10))
-DATABASE_URL = os.getenv("DATABASE_URL")
+def get_secrets():
+    #En local usamos .env directamente
+    if os.getenv("ENV") == "local":
+        return {
+            "SECRET_KEY": os.getenv("SECRET_KEY"),
+            "ALGORITHM": os.getenv("ALGORITHM", "HS256"),
+            "ACCESS_TOKEN_EXPIRE_MINUTES": int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30)),
+            "REFRESH_TOKEN_EXPIRE_DAYS": int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 7)),
+            "DATABASE_URL": os.getenv("DATABASE_URL"),
+            "GOOGLE_CLIENT_ID": os.getenv("GOOGLE_CLIENT_ID"),
+            "GOOGLE_CLIENT_SECRET": os.getenv("GOOGLE_CLIENT_SECRET"),
+            "GOOGLE_REDIRECT_URI": os.getenv("GOOGLE_REDIRECT_URI"),
+            "AWS_S3_BUCKET": os.getenv("AWS_S3_BUCKET")
+        }
 
-#Variables relacionadas con OAuth de Google
-google_client_id = os.getenv("GOOGLE_CLIENT_ID")
-google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
-google_redirect_uri = os.getenv("GOOGLE_CLIENT_URI")
+    #En produccion leemos desde Secrets Manager
+    client = boto3.client("secretsmanager", region_name="eu-west-1")
+    response = client.get_secret_value(SecretId="luvrane/production")
+    return json.loads(response["SecretString"])
+
+#Cargamos los secrets
+secrets = get_secrets()
+
+SECRET_KEY = secrets["SECRET_KEY"]
+ALGORITHM = secrets["ALGORITHM"]
+ACCESS_TOKEN_EXPIRE_MINUTES = int(secrets["ACCESS_TOKEN_EXPIRE_MINUTES"])
+REFRESH_TOKEN_EXPIRE_DAYS = int(secrets["REFRESH_TOKEN_EXPIRE_DAYS"])
+DATABASE_URL = secrets["DATABASE_URL"]
+GOOGLE_CLIENT_ID = secrets["GOOGLE_CLIENT_ID"]
+GOOGLE_CLIENT_SECRET = secrets["GOOGLE_CLIENT_SECRET"]
+GOOGLE_REDIRECT_URI = secrets["GOOGLE_REDIRECT_URI"]
+AWS_S3_BUCKET = secrets["AWS_S3_BUCKET"]
+AWS_SECRET_ACCESS_KEY= secrets["AWS_SECRET_ACCESS_KEY"]
+AWS_ACCESS_KEY_ID = secrets["AWS_ACCESS_KEY_ID"]
+AWS_S3_REGION = secrets["AWS_S3_REGION"]
