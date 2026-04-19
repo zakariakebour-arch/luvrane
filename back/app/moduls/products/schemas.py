@@ -134,3 +134,18 @@ class ProductResponse(ProductBase):
 #Schema para actualizar posicion
 class UpdatePosition(BaseModel):
     position: int
+
+#Schema para solicitar URL firmada
+class PresignedUrlRequest(BaseModel):
+    content_type: str 
+    folder: str         
+
+#Schema de respuesta de URL firmada
+class PresignedUrlResponse(BaseModel):
+    presigned_url: str   
+    public_url: str    
+    media_type: str     
+
+#Schema para actualizar posicion
+class UpdatePosition(BaseModel):
+    position: int = Field(..., ge=0)
